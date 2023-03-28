@@ -1,116 +1,144 @@
-   # Aleo_Testnet3_Miner
+# Aleo Miner
 
 ## Introduction
-Aleo Testnet3 Miner, more informations on https://zkpros.com
+Aleo Miner, more informations on https://zkpros.com
 
 ## Usage
 
 Please refer to the usage help (`zkpros-aleo-miner --help`):
 
 ```
-0.1.0
+0.2.0
 
 Usage: zkpros-aleo-miner [OPTIONS]
 
 Options:
-  -d, --debug              Enable debug logging
-  -k, --key <KEY>          Prover address (aleo1...)
-  -s, --server <SERVER>    Server node
-  -p, --pools <POOLS>      Number of thread pools, default cpus / threads
-  -t, --threads <THREADS>  Number of threads each pool, default 1
-  -o, --log <LOG>          Output log to file
-  -r, --report             Enable report to web
-  -h, --help               Print help information
+  -d, --debug                 Enable debug logging
+  -a, --address <ADDRESS>     Prover address (aleo1...)
+  -s, --server <SERVER>       Server node
+  -p, --pools <POOLS>         Number of thread pools, default cpus / threads on cpu module or gpu numbers on gpu module
+  -t, --threads <THREADS>     Number of threads each pool, default 1
+  -o, --log <LOG>             Output log to file
+  -g, --cuda <CUDA>           Indexes of GPUs to use
+                              Example: -g 0 -g 1 -g 2
+  -f, --full                  Enable use free cpu resource when gpu model,and only working on gpu model
+  -b, --batch <BATCH_SIZE>    Proof batch size, larger number means more gpu memory required.
+                              If not set or set to 0, will using recommended batch size(the recommended size is output on the screen);
+                              If recommended batch size excceeds the memory size, you should reduce it(refer the recommended size output on the screen).
+                              Example : -b 0 (use recommended batch size)
+                                        -b 1000 (please ensure your gpu memory can afford it) 
+  -c, --cpu_resource_limited  default is false, true means cpu resource is very poor, so use gpu to instead it
+  -r, --report                disable report to web
+  -l, --solo                  Enable solo module, default is pool module
+  -h, --help                  Print help information
+
 ```
-## Run
-1. Install Rust
+## Install
 
-   We recommend installing Rust using [rustup](https://www.rustup.rs/). You can install `rustup` as follows:
-
-- macOS or Linux:
-  ```bash
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-  ```
-
-- Windows (64-bit):
-
-  Download the [Windows 64-bit executable](https://win.rustup.rs/x86_64) or
-  [Windows 32-bit executable](https://win.rustup.rs/i686) and follow the on-screen instructions.
-
-
-2. Install cuda
+1. Install cuda
 
    [Download links](https://developer.nvidia.com/cuda-11-6-2-download-archive)
 
 
-3. download
-  
-    ``` 
-    git clone https://github.com/zk-proof/aleo-testnet3-miner.git
-    ``` 
+2. Download miner
 
+   [https://github.com/zk-proof/aleo-testnet3-miner/releases](https://github.com/zk-proof/aleo-testnet3-miner/releases)
 
-4. run (solo / pool):
+## Quick start
 
-       ``` 
-        notice： 
-       
-        -k: solo (aleo1xxx), pool (xxxx-xxx)
+1. ubuntu os
 
-               example: solo: aleo1trp4exvys0w2de7fc002vxycgkpp0zkl2v5lacr6qhctms9z6sgqqqkklc
-                        pool: b0ef1ef5-404f-4b2e-9c96-c9736e255824
+ - cpu model
+    ```
+    ./zkpros-aleo-miner-cpu  -a <address>  
+    ```
+ - gpu model
+    ```
+    ./zkpros-aleo-miner-gpu  -a <address>  -g 0 
+    ```
 
-        -s: ip:port
+2. hiveon os
+- Wallet
+    ```
+       Coin: ALEO
+       Address: xxx
+       Name: xx
+     ```
 
-               example：solo: solo.zk-proof.xyz:9999
-                        pool: (unavailable now)
+- Flight Sheets
    
-        ``` 
+  Miner:  Custom
 
+  Custom configuration
+    ```
+       Miner name:                    zkpros-aleo-miner
+       Installation URL:              https://github.com/zk-proof/aleo-testnet3-miner/releases/download/vx.x.x/zkpros-aleo-miner-hiveos.tar.gz
+       Hash algorithm:                 ----
+       Wallet and worker template:    %WAL%
+       Pool URL:                      solo.zk-proof.xyz:9999  (or xx.zk-proof.xyz:xx)
+       Pass:
+       Extra config arguments:        -g 0
+     ```
+## Parameters
+- gpu model
+1. use " -l " to miner on solo module
+    ```
+    ./zkpros-aleo-miner-gpu  -a <address>  -g 0  -l
+    ```
+2. use " -g  " to miner on multiple gpus
 
-   - linux os
-     - cpu model:
-     ```
-       chmod a+x ./zkpros-aleo-miner-cpu
-       ./zkpros-aleo-miner-cpu -s "ip:port"  -k "xx" -r
-     ```
-     - gpu model:
-     ```
-       chmod a+x ./zkpros-aleo-miner-gpu
-       ./zkpros-aleo-miner-gpu -s "ip:port"  -k "xx" -g 0 -g 1 -r
-     ```
-     
-   - windows os:
-     - cpu model:
-     ```
-      zkpros-aleo-miner-cpu.exe -s "ip:port" -k "xx" -r
-     ```
-     - gpu model:
-     ```
-      zkpros-aleo-miner-gpu.exe -s "ip:port" -k "xx" -g 0 -g 1 -r
-     ```
-   
-6. information
+    ```
+    ./zkpros-aleo-miner-gpu  -a <address>  -g 0 -g 1 -g 2  -l
+    ```
+3. use " -c  " to limited use cpu resource when cpu resources less and gpu resources more
+
+    ```
+    ./zkpros-aleo-miner-gpu  -a <address>  -g 0 -g 1 -g 2  -l  -c
+    ```
+4. use " -s  " to specifies the server ip
+
+    ```
+    ./zkpros-aleo-miner-gpu  -a <address>  -g 0 -g 1 -g 2  -l  -c  -s <ip:port>
+    ```
+5. use " -b  " to specifies the batch size
+
+    ```
+    ./zkpros-aleo-miner-gpu  -a <address>  -g 0 -g 1 -g 2  -l  -c  -s <ip:port> -b 1000
+    ```
+
+- cpu model
+1. use " -l " to miner on solo module
+    ```
+    ./zkpros-aleo-miner-cpu  -a <address>  -l
+    ```
+2. use " -p  -t " to modify the default pool nums and each pool threads
+    ```
+    ./zkpros-aleo-miner-cpu  -a <address>  -l  -p 10 -t 1
+    ```
+
+## Information
 ```
 ████████████████████████████████████████████████████████████████████████████████████████████
 █░                                                                                        ░█
 █░    ───────▓▓╬▓─────────      OS  : Linux 20.04 Ubuntu                                  ░█
-█░    ─────▓▓▓▓╬▓▓▓▓──────      CPU : physical cores: 12   logical cores: 20              ░█
-█░    ░░▄░▓▓▓▓▓║▓▓▓▓▓░░░░░            [1] 12th Gen Intel(R) Core(TM) i7-12700KF(20)       ░█
+█░    ─────▓▓▓▓╬▓▓▓▓──────      CPU : physical cores: 64   logical cores: 128             ░█
+█░    ░░▄░▓▓▓▓▓║▓▓▓▓▓░░░░░            [1] AMD EPYC 7542 32-Core Processor(128)            ░█
 █░    ░▀████████████████▀░░                                                               ░█
-█░    ░ https://zkpros.com ░    GPU : working gpus: 0                                     ░█
-█░                                                                                        ░█
-█░                              RAM : 31 G                                                ░█
+█░    ░ https://zkpros.com ░    GPU : working gpus: 1                                     ░█
+█░                                    [1] NVIDIA GeForce RTX 3090 ^ 24G                   ░█
+█░                              RAM : 126 G                                               ░█
 █░    ================================================================================    ░█
 █░                                                                                        ░█
-█░    Speed(30s) : 76.97 C/S    |  Speed(1min) : 78.22 C/S    |  Speed(5min) : -- C/S     ░█
+█░    GPU    |     Speed(30s)        |       Speed(1min)       |        Speed(5min)       ░█
+█░    1      |     -- c/s            |       -- c/s            |        -- c/s            ░█
+█░    total  |     -- c/s            |       -- c/s            |        -- c/s            ░█
 █░                                                                                        ░█
-█░    Last 10s CPU usage avg(%) : 1761.6                                                  ░█
-█░    Last 10s GPU usage avg(%) : --                                                      ░█
-█░    Last 10s ARM usage avg(M) : 11926 Mb/31911 Mb                                       ░█
+█░    Last 10s CPU usage avg(%) : 200.4                                                   ░█
+█░    Last 10s GPU usage avg(%) : 99                                                      ░█
+█░    Last 10s ARM usage avg(M) : 222 Mb/128750 Mb                                        ░█
 █░                                                                                        ░█
 █░    --------------------------------Environment Detail------------------------------    ░█
-█░    Proofs: 9370               Thread Pools:  20 x 1             model: cpu             ░█
+█░     Thread Pools:   1 x 1          Cpu limited: false          Model: cpu (pool)       ░█
 █░                                                                                        ░█
 ████████████████████████████████████████████████████████████████████████████████████████████
 ```
