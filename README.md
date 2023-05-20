@@ -75,7 +75,7 @@ Options:
        Installation URL:              https://github.com/zk-proof/aleo-testnet3-miner/releases/download/vx.x.x/zkpros-aleo-miner-hiveos.tar.gz
        Hash algorithm:                 ----
        Wallet and worker template:    %WAL%
-       Pool URL:                      solo.zk-proof.xyz:9999  (or xx.zk-proof.xyz:xx)
+       Pool URL:                      solo.zk-proof.xyz:9999  (pool: solo.zk-proof.xyz:8888)
        Pass:
        Extra config arguments:        -g 0
      ```
